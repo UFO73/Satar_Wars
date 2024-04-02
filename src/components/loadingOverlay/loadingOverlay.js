@@ -9,11 +9,9 @@ const LoadingOverlay = ({ isLoading }) => {
     let progress = 0;
     // Start a timer to simulate loading progress
     const interval = setInterval(() => {
-      // Increment progress randomly
       progress += Math.random() * 10;
-      // Ensure progress doesn't exceed 100%
       setLoadingProgress(Math.min(progress, 100));
-    }, 200);
+    }, 90);
 
     // Clear the timer when component unmounts
     return () => clearInterval(interval);
