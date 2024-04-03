@@ -10,12 +10,14 @@ const StarWarsCharacters = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedCharacter, setSelectedCharacter] = useState(null);
     const [isEndOfRequest, setisEndOfRequest] = useState(false)
+    console.log(isEndOfRequest)
 
     // Function to fetch characters data from the API
     const fetchData = async () => {
         // Fetch data only if no characters are loaded or loading is not in progress
         if (characters.length === 0 || !loading) {
             setLoading(true); // Set loading state to true
+            setisEndOfRequest(false)
             try {
                 const data = await fetchCharacters(page); // Fetch characters data for the current page
                 if (data.length > 0) {
@@ -25,6 +27,7 @@ const StarWarsCharacters = () => {
                 }
                 setLoading(false); // Set loading state to false after data is fetched
             } catch (error) {
+                setisEndOfRequest(true)
                 console.log('Error')
                 setLoading(false); // Set loading state to false if an error occurs during fetching
             }
@@ -45,7 +48,9 @@ const StarWarsCharacters = () => {
         if (loading) return; // Don't observe if loading is in progress
         observer.current = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
-                fetchData(); // Fetch more data when the last character element is intersected
+                if (!isEndOfRequest) {
+                    fetchData(); // Fetch more data when the last character element is intersected
+                }
             }
         });
         // Observe the last character element
@@ -107,3 +112,5 @@ const StarWarsCharacters = () => {
 };
 
 export default StarWarsCharacters;
+
+
