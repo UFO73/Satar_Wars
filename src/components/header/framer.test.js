@@ -1,7 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import FramerMagnetic from "./FramerMagnetic";
+import FramerMagnetic from "./framer";
 
 describe("FramerMagnetic component", () => {
   test("moves element on mouse movement", () => {
@@ -17,12 +16,12 @@ describe("FramerMagnetic component", () => {
     fireEvent.mouseMove(testElement, { clientX: 50, clientY: 50 });
 
     // Check if the element moved
-    expect(testElement).toHaveStyle("transform: translate(0px, 0px)");
+    expect(testElement).toHaveStyle("transform: translate(0, 0)");
 
     // Simulate mouse leaving
     fireEvent.mouseLeave(testElement);
 
     // Check if the element reset its position
-    expect(testElement).toHaveStyle("transform: translate(0px, 0px)");
+    expect(testElement).toHaveStyle("transform: translate(0, 0)");
   });
 });

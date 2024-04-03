@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ReactFlow from "react-flow-renderer";
 import { fetchStarshipInfo } from "../api/api"; 
+
+    // Object mapping film IDs to film names
+const FilmsObj = {
+    Film1: "A New Hope",
+    Film2: "The Empire Strikes Back",
+    Film3: "Return of the Jedi",
+    Film4: "The Phantom Menace",
+    Film5: "Attack of the Clones",
+    Film6: "Revenge of the Sith"
+};
 
 const FlowStarship = ({ character }) => {
     const [starshipsInfo, setStarshipsInfo] = useState({});
@@ -19,6 +29,8 @@ const FlowStarship = ({ character }) => {
 
                 const info = {};
                 starshipsInfoArray.forEach(shipInfo => {
+                    if (!shipInfo) return;
+
                     shipInfo.films.forEach(filmId => {
                         if (!info[filmId]) {
                             info[filmId] = [];
@@ -35,70 +47,69 @@ const FlowStarship = ({ character }) => {
         fetchStarshipsInfo(character.starships);
     }, [character.starships]);
 
-    // Object mapping film IDs to film names
-    const FilmsObj = {
-        Film1: "A New Hope",
-        Film2: "The Empire Strikes Back",
-        Film3: "Return of the Jedi",
-        Film4: "The Phantom Menace",
-        Film5: "Attack of the Clones",
-        Film6: "Revenge of the Sith"
-    };
-
     // Mapping film nodes
-    const filmsNodes = character.films.map((film, index) => ({
-        id: `film-${film}`,
-        data: { label: FilmsObj[`Film${film}`] },
-        position: { x: 10 + index * 160, y: 100 },
-        type: starshipsInfo[film] ? "default" : "output", // Changed quotes from '' to ""
-    }));
+    const filmsNodes = useMemo(() => {
+        return character.films.map((film, index) => ({
+            id: `film-${film}`,
+            data: { label: FilmsObj[`Film${film}`] },
+            position: { x: 10 + index * 160, y: 100 },
+            type: starshipsInfo[film] ? "default" : "output",
+        }));
+    }, [character.films, starshipsInfo]);
 
     // Mapping end nodes
-    const endNodes = character.films.reduce((acc, film) => {
-        const shipNames = starshipsInfo[film];
-        if (shipNames && shipNames.length > 0) {
-            shipNames.forEach((shipName, index) => {
-                acc.push({
-                    id: `end-${film}-${index}`,
-                    data: { label: shipName },
-                    position: { x: film * 160, y: 200 + index * 80 },
-                    type: "output", // Changed quotes from '' to ""
+    const endNodes = useMemo(() => {
+        return character.films.reduce((acc, film) => {
+            const shipNames = starshipsInfo[film];
+            if (shipNames && shipNames.length > 0) {
+                shipNames.forEach((shipName, index) => {
+                    acc.push({
+                        id: `end-${film}-${index}`,
+                        data: { label: shipName },
+                        position: { x: film * 160, y: 200 + index * 80 },
+                        type: "output",
+                    });
                 });
-            });
-        }
-        return acc;
-    }, []);
+            }
+            return acc;
+        }, []);
+    }, [character.films, starshipsInfo]);
+
 
     // Combining all nodes
-    const nodes = [
-        {
-            id: "1",
-            type: "input",
-            data: { label: character.name },
-            position: { x: 10, y: 10 },
-        },
-        ...filmsNodes,
-        ...endNodes,
-    ];
+    const nodes = useMemo(() => {
+        return [
+            {
+                id: "1",
+                type: "input",
+                data: { label: character.name },
+                position: { x: 10, y: 10 },
+            },
+            ...filmsNodes,
+            ...endNodes,
+        ];
+    }, [character.name, filmsNodes, endNodes]);
 
     // Mapping edges between nodes
-    const edges = character.films.flatMap((film) => [
-        {
-            id: `edge-${film}`,
-            source: "1",
-            target: `film-${film}`,
-            animated: true,
-        },
-        ...starshipsInfo[film]?.map((_, index) => ({
-            id: `edge-${film}-end-${index}`,
-            source: `film-${film}`,
-            target: `end-${film}-${index}`,
-            animated: true,
-        })) || [],
-    ]);
+    const edges = useMemo(() => {
+        return character.films.flatMap((film) => [
+            {
+                id: `edge-${film}`,
+                source: "1",
+                target: `film-${film}`,
+                animated: true,
+            },
+            ...starshipsInfo[film]?.map((_, index) => ({
+                id: `edge-${film}-end-${index}`,
+                source: `film-${film}`,
+                target: `end-${film}-${index}`,
+                animated: true,
+            })) || [],
+        ]);
+    }, [character.films, starshipsInfo]);
 
     return (
-        <div className="flow-container">
+        <div className="flow-container" data-testid="modal">
             {/* Rendering the ReactFlow component */}
             <ReactFlow className="test" nodes={nodes} edges={edges} />
         </div>

@@ -1,11 +1,18 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import { act, render, waitFor } from "@testing-library/react";
 import StarWarsCharacters from "./starWarsCharacters";
 
 // Mock the API function
 jest.mock("../api/api", () => ({
-  fetchCharacters: jest.fn(() => Promise.resolve([{ name: "Luke Skywalker" }])),
+  fetchCharacters: jest.fn(() => Promise.resolve([{
+    name: "Luke Skywalker",
+    films: [1,2,3],
+    starships: [1,2,3],
+  }])),
+  fetchStarshipInfo: jest.fn(() => Promise.resolve({
+    films: [1,2],
+    name: 'Starship 1',
+  })),
 }));
 
 describe("StarWarsCharacters component", () => {
@@ -44,7 +51,9 @@ describe("StarWarsCharacters component", () => {
     });
 
     // Click on a character
-    getByText("Luke Skywalker").click();
+    act(() => {
+      getByText("Luke Skywalker").click();
+    });
 
     // Wait for the modal to be opened
     await waitFor(() => {

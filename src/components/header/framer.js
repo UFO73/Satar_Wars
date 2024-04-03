@@ -1,37 +1,34 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-export default function FramerMagnetic({children}) {
+export default function FramerMagnetic({ children }) {
     // Ref to the component
     const magnetic = useRef(null);
 
-    useEffect( () => {
-        // Animation for x-axis
-        const xTo = gsap.quickTo(magnetic.current, "x", {duration: 1, ease: "elastic.out(1, 0.3)"});
-        // Animation for y-axis
-        const yTo = gsap.quickTo(magnetic.current, "y", {duration: 1, ease: "elastic.out(1, 0.3)"});
-
-        // Event listener for mouse movement
-        magnetic.current.addEventListener("mousemove", (e) => {
+    useEffect(() => {
+        const handleMouseMove = (e) => {
             const { clientX, clientY } = e;
-            const {height, width, left, top} = magnetic.current.getBoundingClientRect();
-            const x = clientX - (left + width/2);
-            const y = clientY - (top + height/2);
-            // Update x and y coordinates
-            xTo(x);
-            yTo(y);
-        });
+            const { height, width, left, top } = magnetic.current.getBoundingClientRect();
+            const x = clientX - (left + width / 2);
+            const y = clientY - (top + height / 2);
+            gsap.to(magnetic.current, { x, y, duration: 1, ease: "elastic.out(1, 0.3)" });
+        };
 
-        // Event listener for mouse leaving
-        magnetic.current.addEventListener("mouseleave", (e) => {
-            // Reset x and y coordinates to 0
-            xTo(0);
-            yTo(0);
-        });
-    }, []);
+        const handleMouseLeave = () => {
+            gsap.to(magnetic.current, { x: 0, y: 0, duration: 1, ease: "elastic.out(1, 0.3)" });
+        };
+
+        // Attach event listeners
+        magnetic.current.addEventListener("mousemove", handleMouseMove);
+        magnetic.current.addEventListener("mouseleave", handleMouseLeave);
+
+        // Remove event listeners when component unmounts
+        return () => {
+            magnetic.current.removeEventListener("mousemove", handleMouseMove);
+            magnetic.current.removeEventListener("mouseleave", handleMouseLeave);
+        };
+    }, []); // Empty dependency array ensures this effect runs only once, similar to componentDidMount
 
     // Cloning the children and passing ref to the cloned element
-    return (
-        React.cloneElement(children, {ref:magnetic})
-    );
-};
+    return React.cloneElement(children, { ref: magnetic });
+}

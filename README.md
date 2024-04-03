@@ -6,22 +6,17 @@ This web application allows users to view a list of Star Wars characters, as wel
 
 Clone the repository:
 
-Copy code
-`git clone`
 Go to the folder with the project:
+`git clone`
 
-Copy code
-`cd star-wars`
 Install dependencies using npm:
+`cd star-wars`
 
-Copy code
 `npm install`
 
 ## Launching :white_check_mark:
 
 Run the application using the command:
-
-Copy code
 `npm run dev`
 
 This will launch the app in development mode. Open your browser and navigate to http://localhost:3000 to see the app in action.
@@ -29,8 +24,6 @@ This will launch the app in development mode. Open your browser and navigate to 
 ## Tests :white_check_mark:
 
 To run the tests, use the command:
-
-Copy code
 `npm run test`
 
 This will run the tests using Jest. They will check the correct operation of the main functions of the program.
