@@ -27,7 +27,7 @@
   }
 
   .body {
-    @apply font-[STARWARS] bg-gray-800 h-full bg-[url('./../assets/images/starships.gif')] bg-cover bg-no-repeat bg-center bg-fixed bg-opacity-50;
+    @apply font-[STARWARS] bg-black h-full bg-[url('./../assets/images/starships.gif')] bg-cover bg-no-repeat bg-center bg-fixed bg-opacity-50;
   }
 
 }
