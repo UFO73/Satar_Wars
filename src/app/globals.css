@@ -23,7 +23,7 @@
   .react-flow__node-input,
   .nopan,
   .selectable {
-    @apply border border-solid border-yellow-500 bg-transparent text-yellow-500-alpha
+    @apply border border-solid border-yellow-500 bg-black text-yellow-500-alpha
   }
 
   .body {

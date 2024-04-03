@@ -9,6 +9,7 @@ const StarWarsCharacters = () => {
     const [page, setPage] = useState(1);
     const [showModal, setShowModal] = useState(false);
     const [selectedCharacter, setSelectedCharacter] = useState(null);
+    const [isEndOfRequest, setisEndOfRequest] = useState(false)
 
     // Function to fetch characters data from the API
     const fetchData = async () => {
@@ -24,6 +25,7 @@ const StarWarsCharacters = () => {
                 }
                 setLoading(false); // Set loading state to false after data is fetched
             } catch (error) {
+                console.log('Error')
                 setLoading(false); // Set loading state to false if an error occurs during fetching
             }
         }
@@ -64,6 +66,13 @@ const StarWarsCharacters = () => {
         setSelectedCharacter(character); // Set the selected character
     };
 
+    //Close the flow window
+    document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        setShowModal(false)
+    }
+    });
+
     // Render the list of characters and the modal if showModal is true
     return (
         <div>
@@ -98,4 +107,3 @@ const StarWarsCharacters = () => {
 };
 
 export default StarWarsCharacters;
-

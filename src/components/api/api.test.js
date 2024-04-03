@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fetchCharacters, fetchStarshipInfo } from "./apiFunctions"; // Assuming your functions are in a file named apiFunctions.js
+import { fetchCharacters, fetchStarshipInfo } from "./api"; // Assuming your functions are in a file named apiFunctions.js
 
 // Mocking axios
 jest.mock("axios");
